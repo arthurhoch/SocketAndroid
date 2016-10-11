@@ -1,6 +1,8 @@
-package br.unisc.arthur.sockmodule;
+package br.unisc.arthur.sockmodule.Socket;
 
 import android.util.Log;
+
+import java.util.concurrent.ExecutionException;
 
 
 public class Talk2Module {
@@ -35,9 +37,31 @@ public class Talk2Module {
 
         socketTask.execute(message == null ? "" : message.toString());
 
-
+        try {
+            returnMessage = socketTask.get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
 
         return returnMessage;
+    }
+
+    public void requestWhitoutResponse(String message, String type) {
+
+
+        class NonBlock implements Runnable {
+            String message;
+            String type;
+            NonBlock(String message, String type) { this.message = message; this.type = type; }
+            public void run() {
+                request(message, type);
+            }
+        }
+        Thread t = new Thread(new NonBlock(message, type));
+        t.start();
+
     }
 
 }

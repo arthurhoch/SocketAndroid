@@ -1,6 +1,4 @@
-package br.unisc.arthur.sockmodule;
-
-
+package br.unisc.arthur.sockmodule.Socket;
 
 import android.os.AsyncTask;
 import android.util.Log;
@@ -14,12 +12,7 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
 
-/**
- * Classe para envio de dados via socket
- *
- * @author Numeroreal
- *
- */
+
 public abstract class SocketTask extends AsyncTask<String, String, String> {
 
     private Socket socket;
@@ -30,18 +23,6 @@ public abstract class SocketTask extends AsyncTask<String, String, String> {
     private int timeout;
     private BufferedReader bufferedReader;
 
-    /**
-     * Construtor com host, porta e timeout
-     *
-     * @param host
-     *            host para conexão
-     * @param port
-     *            porta para conexão
-     * @param timeout
-     *            timeout da conexão
-     */
-
-
     public SocketTask(String host, int port, int timeout) {
         super();
         this.host = host;
@@ -49,13 +30,7 @@ public abstract class SocketTask extends AsyncTask<String, String, String> {
         this.timeout = timeout;
     }
 
-    /**
-     * Envia dados adicionais se estiver conectado
-     *
-     * @param data
-     *            dados adicionais
-     * @throws IOException
-     */
+
     public void sendData(String data) throws IOException {
         if (socket != null && socket.isConnected()) {
             os.write(data.getBytes());
@@ -65,7 +40,6 @@ public abstract class SocketTask extends AsyncTask<String, String, String> {
     @Override
     protected String doInBackground(String... params) {
         String result = "";
-
 
         try {
             SocketAddress sockaddr = new InetSocketAddress(host, port);
@@ -82,16 +56,10 @@ public abstract class SocketTask extends AsyncTask<String, String, String> {
 
                  result = bufferedReader.readLine();
 
-            } else {
-                publishProgress("CONNECT ERROR");
             }
         } catch (IOException e) {
-            publishProgress("ERROR");
-            Log.e("SocketAndroid", "Erro de entrada e saida", e);
             result = "";
         } catch (Exception e) {
-            publishProgress("ERROR");
-            Log.e("SocketAndroid", "Erro generico", e);
             result = "";
         } finally {
             try {
@@ -105,7 +73,7 @@ public abstract class SocketTask extends AsyncTask<String, String, String> {
                     socket.close();
                 }
             } catch (Exception e) {
-                Log.e("SocketAndroid", "Erro ao fechar conexao", e);
+                Log.e("Socket Android", "Erro ao fechar conexao", e);
             }
         }
         return result;

@@ -7,6 +7,8 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 
+import br.unisc.arthur.sockmodule.Socket.Talk2Module;
+
 public class MainActivity extends Activity {
     private Button btnSend;
     private TextView txtStatus;
@@ -28,23 +30,47 @@ public class MainActivity extends Activity {
     private OnClickListener btnConnectListener = new OnClickListener() {
         public void onClick(View v) {
 
-            // Recupera host e porta
             String hostPort = txtHostPort.getText().toString();
             int idxHost = hostPort.indexOf(":");
             final String host = hostPort.substring(0, idxHost);
             final int port = Integer.parseInt(hostPort.substring(idxHost + 1));
 
-            Talk2Module talk2Module;
-            talk2Module = new Talk2Module(host, port);
-
-            String sql = "create table x";
-
-            String moduleResponse = talk2Module.request(sql, Talk2Module.TYPE_SQL);
 
 
+            // Para testes !!!
+
+            /*Declaração variaveis*/
+            //String sql;
+
+            /*Usando informações da interface*/
+
+            //sql = txtValor.getText().toString();
+            //txtStatus.setText(RunSql(host, port, sql));
+
+            /*Atribuindo informações*/
+            //sql = "create table x";
+            //RunSqlNoReturn(host, port, sql);
+
+
+            // Para testes !!!
 
         }
     };
+
+
+
+    private void RunSqlNonReturn(String host, int port, String sql) {
+        Talk2Module talk2Module;
+        talk2Module = new Talk2Module(host, port);
+        talk2Module.requestWhitoutResponse(sql, Talk2Module.TYPE_SQL);
+    }
+
+
+    private String RunSql(String host, int port, String sql) {
+        Talk2Module talk2Module;
+        talk2Module = new Talk2Module(host, port);
+        return talk2Module.request(sql, Talk2Module.TYPE_SQL);
+    }
 
 
 }
