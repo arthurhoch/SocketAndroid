@@ -35,7 +35,31 @@ public class MainActivity extends Activity {
             final String host = hostPort.substring(0, idxHost);
             final int port = Integer.parseInt(hostPort.substring(idxHost + 1));
 
-
+            
+            /*************************************************
+            //Utilize para inserir na DB; - Inicio
+            *************************************************/
+            
+            /*
+            CREATE TABLE tabLocalizeUnisc(
+	            iniLat float NOT NULL,
+	            iniLng float NOT NULL,
+	            finLng float NOT NULL,
+	            rota varchar(1000) NOT NULL,
+	            distancia int NOT NULL,
+	            distanciaReta int NOT NULL
+            );
+            */
+            String sql;
+            sql = "insert 0.4 0.4 0.4 aaaaa2 12 2";
+            RunSqlNoReturn(host, port, sql);
+            
+            /*************************************************
+            //Utilize para inserir na DB; - Fim
+            *************************************************/
+            
+            
+            //Os exemplos abaixo não funcionarão
 
             // Para testes !!!
 
