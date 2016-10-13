@@ -7,7 +7,7 @@ import java.util.concurrent.ExecutionException;
 
 public class Talk2Module {
 
-    public static final String TYPE_SQL = "sql";
+    public static final String TYPE_SQL = "sql ";
 
     private final String host;
     private final int port;
