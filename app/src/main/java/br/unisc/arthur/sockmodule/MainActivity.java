@@ -5,14 +5,26 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import br.unisc.arthur.sockmodule.Socket.Talk2Module;
 
 public class MainActivity extends Activity {
-    private Button btnSend;
+    private Button btnSelect;
+    private Button btnInsert;
+    private Button btnDelete;
+
+    private EditText i_iniLat;
+    private EditText i_iniLng;
+    private EditText i_finLat;
+    private EditText i_finLng;
+    private EditText i_rota;
+    private EditText i_distancia;
+    private EditText i_distanciaReta;
+
+    private Button btnClear;
     private TextView txtStatus;
-    private TextView txtValor;
     private TextView txtHostPort;
 
 
@@ -20,67 +32,85 @@ public class MainActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        btnSend = (Button) findViewById(R.id.btnSend);
+        btnSelect = (Button) findViewById(R.id.btnSelect);
+        btnInsert = (Button) findViewById(R.id.btnInsert);
+        btnDelete = (Button) findViewById(R.id.btnDelete);
+        btnClear = (Button) findViewById(R.id.btnClear);
+
         txtStatus = (TextView) findViewById(R.id.txtStatus);
-        txtValor = (TextView) findViewById(R.id.txtValor);
         txtHostPort = (TextView) findViewById(R.id.txtHostPort);
-        btnSend.setOnClickListener(btnConnectListener);
+
+        i_iniLat = (EditText) findViewById(R.id.i_iniLat);
+        i_iniLng = (EditText) findViewById(R.id.i_iniLng);
+        i_finLat = (EditText) findViewById(R.id.i_finLat);
+        i_finLng = (EditText) findViewById(R.id.i_FinLng);
+        i_rota   = (EditText) findViewById(R.id.i_rota);
+        i_distancia = (EditText) findViewById(R.id.i_distancia);
+        i_distanciaReta = (EditText) findViewById(R.id.i_distanciaReta);
+
+        btnSelect.setOnClickListener(btnSelectListener);
+        btnInsert.setOnClickListener(btnInsertListener);
+        btnDelete.setOnClickListener(btnDeleteListener);
+        btnClear.setOnClickListener(btnClearListener);
+
+        txtHostPort.setText("servidor.br:porta");
+
     }
 
-    private OnClickListener btnConnectListener = new OnClickListener() {
+    private OnClickListener btnSelectListener = new OnClickListener() {
         public void onClick(View v) {
 
             String hostPort = txtHostPort.getText().toString();
             int idxHost = hostPort.indexOf(":");
-            final String host = hostPort.substring(0, idxHost);
-            final int port = Integer.parseInt(hostPort.substring(idxHost + 1));
+            String host = hostPort.substring(0, idxHost);
+            int port = Integer.parseInt(hostPort.substring(idxHost + 1));
 
-            
-            /*************************************************
-            //Utilize para inserir na DB; - Inicio
-            *************************************************/
-            
-            /*
-            CREATE TABLE tabLocalizeUnisc(
-	            iniLat float NOT NULL,
-	            iniLng float NOT NULL,
-	            finLng float NOT NULL,
-	            rota varchar(1000) NOT NULL,
-	            distancia int NOT NULL,
-	            distanciaReta int NOT NULL
-            );
-            */
             String sql;
-            sql = "insert 0.4 0.4 0.4 aaaaa2 12 2";
-            RunSqlNoReturn(host, port, sql);
-            
-            /*************************************************
-            //Utilize para inserir na DB; - Fim
-            *************************************************/
-            
-            
-            //Os exemplos abaixo não funcionarão
-
-            // Para testes !!!
-
-            /*Declaração variaveis*/
-            //String sql;
-
-            /*Usando informações da interface*/
-
-            //sql = txtValor.getText().toString();
-            //txtStatus.setText(RunSql(host, port, sql));
-
-            /*Atribuindo informações*/
-            //sql = "create table x";
-            //RunSqlNoReturn(host, port, sql);
-
-
-            // Para testes !!!
+            sql = "select * from tabLocalizeUnisc";
+            txtStatus.setText(RunSql(host, port, sql));
 
         }
     };
 
+    private OnClickListener btnInsertListener = new OnClickListener() {
+        public void onClick(View v) {
+
+            String hostPort = txtHostPort.getText().toString();
+            int idxHost = hostPort.indexOf(":");
+            String host = hostPort.substring(0, idxHost);
+            int port = Integer.parseInt(hostPort.substring(idxHost + 1));
+
+            String sql;
+            sql = "insert into tabLocalizeUnisc values( "+i_iniLat.getText()+", "+i_iniLng.getText()+
+                    ", "+i_finLat.getText()+", "+i_finLng.getText()+", \""+i_rota.getText()+
+                    "\", "+i_distancia.getText()+", "+i_distanciaReta.getText()+")";
+
+            RunSqlNonReturn(host, port, sql);
+
+        }
+    };
+
+    private OnClickListener btnDeleteListener = new OnClickListener() {
+        public void onClick(View v) {
+
+            String hostPort = txtHostPort.getText().toString();
+            int idxHost = hostPort.indexOf(":");
+            String host = hostPort.substring(0, idxHost);
+            int port = Integer.parseInt(hostPort.substring(idxHost + 1));
+
+            String sql;
+            sql = "delete from tabLocalizeUnisc";
+            RunSqlNonReturn(host, port, sql);
+
+        }
+    };
+
+    private OnClickListener btnClearListener = new OnClickListener() {
+        public void onClick(View v) {
+            txtStatus.setText("");
+
+        }
+    };
 
 
     private void RunSqlNonReturn(String host, int port, String sql) {

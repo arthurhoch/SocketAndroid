@@ -1,7 +1,5 @@
 package br.unisc.arthur.sockmodule.Socket;
 
-import android.util.Log;
-
 import java.util.concurrent.ExecutionException;
 
 
@@ -23,13 +21,10 @@ public class Talk2Module {
 
         SocketTask socketTask;
 
-        Log.d("Socket", "Incializou");
-
         socketTask = new SocketTask(host, port, 5000) {
             @Override
             protected void onProgressUpdate(String... values) {
                 returnMessage = values[0];
-                Log.d("Socket", "Recebeu2 :" + returnMessage);
             }
         };
 
