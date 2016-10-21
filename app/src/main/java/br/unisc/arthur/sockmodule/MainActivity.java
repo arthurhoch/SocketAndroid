@@ -28,8 +28,8 @@ public class MainActivity extends Activity {
 
     private String sql;
     
-    private String host "666.server.com";
-    private int port = 666;
+    private String host "123.server.com";
+    private int port = 123;
 
 
     @Override
