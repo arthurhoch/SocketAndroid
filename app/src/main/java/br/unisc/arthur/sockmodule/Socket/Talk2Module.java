@@ -6,9 +6,12 @@ import java.util.concurrent.ExecutionException;
 public class Talk2Module {
 
     public static final String TYPE_SQL = "sql ";
+    public static final String TYPE_FREE = "";
 
     private final String host;
     private final int port;
+
+    private SocketTask socketTask;
 
     public String returnMessage;
 
@@ -18,8 +21,6 @@ public class Talk2Module {
     }
 
     public String request(String message, String type) {
-
-        SocketTask socketTask;
 
         socketTask = new SocketTask(host, port, 5000) {
             @Override
@@ -43,20 +44,31 @@ public class Talk2Module {
         return returnMessage;
     }
 
-    public void requestWhitoutResponse(String message, String type) {
+    public void requestSetTextView(String message, String type, final TextView v) {
 
-
-        class NonBlock implements Runnable {
-            String message;
-            String type;
-            NonBlock(String message, String type) { this.message = message; this.type = type; }
-            public void run() {
-                request(message, type);
+        socketTask = new SocketTask(host, port, 5000, v) {
+            @Override
+            protected void onProgressUpdate(String... values) {
+                v.setText(values[0]);
             }
-        }
-        Thread t = new Thread(new NonBlock(message, type));
-        t.start();
+        };
 
+        message = type + message;
+
+        socketTask.execute(message == null ? "" : message.toString());
+    }
+
+    public void requestSetTextView(String type, final TextView v) {
+        requestSetTextView("", type, v);
+    }
+
+    public void requestWithoutResponse(String message, String type) {
+
+        socketTask = new SocketTask(host, port, 5000) {};
+
+        message = type + message;
+
+        socketTask.execute(message == null ? "" : message.toString());
     }
 
 }
