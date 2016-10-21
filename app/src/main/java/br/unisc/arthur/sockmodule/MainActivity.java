@@ -25,20 +25,24 @@ public class MainActivity extends Activity {
 
     private Button btnClear;
     private TextView txtStatus;
-    private TextView txtHostPort;
+
+    private String sql;
+    
+    private String host "666.server.com";
+    private int port = 666;
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_sql);
+
         btnSelect = (Button) findViewById(R.id.btnSelect);
         btnInsert = (Button) findViewById(R.id.btnInsert);
         btnDelete = (Button) findViewById(R.id.btnDelete);
         btnClear = (Button) findViewById(R.id.btnClear);
 
         txtStatus = (TextView) findViewById(R.id.txtStatus);
-        txtHostPort = (TextView) findViewById(R.id.txtHostPort);
 
         i_iniLat = (EditText) findViewById(R.id.i_iniLat);
         i_iniLng = (EditText) findViewById(R.id.i_iniLng);
@@ -52,35 +56,27 @@ public class MainActivity extends Activity {
         btnInsert.setOnClickListener(btnInsertListener);
         btnDelete.setOnClickListener(btnDeleteListener);
         btnClear.setOnClickListener(btnClearListener);
-
-        txtHostPort.setText("servidor.br:porta");
-
+        
+        talk2Module = new Talk2Module(host, port);
     }
 
-    private OnClickListener btnSelectListener = new OnClickListener() {
+    @Override
+    protected void onResume() {
+        super.onResume();
+        talk2Module = new Talk2Module(host, port);
+    }
+
+    private View.OnClickListener btnSelectListener = new View.OnClickListener() {
         public void onClick(View v) {
-
-            String hostPort = txtHostPort.getText().toString();
-            int idxHost = hostPort.indexOf(":");
-            String host = hostPort.substring(0, idxHost);
-            int port = Integer.parseInt(hostPort.substring(idxHost + 1));
-
-            String sql;
             sql = "select * from tabLocalizeUnisc";
-            txtStatus.setText(RunSql(host, port, sql));
+            //txtStatus.setText(RunSql(host, port, sql));
+            RunSqlSetTextView(host, port, sql, txtStatus);
 
         }
     };
 
-    private OnClickListener btnInsertListener = new OnClickListener() {
+    private View.OnClickListener btnInsertListener = new View.OnClickListener() {
         public void onClick(View v) {
-
-            String hostPort = txtHostPort.getText().toString();
-            int idxHost = hostPort.indexOf(":");
-            String host = hostPort.substring(0, idxHost);
-            int port = Integer.parseInt(hostPort.substring(idxHost + 1));
-
-            String sql;
             sql = "insert into tabLocalizeUnisc values( "+i_iniLat.getText()+", "+i_iniLng.getText()+
                     ", "+i_finLat.getText()+", "+i_finLng.getText()+", \""+i_rota.getText()+
                     "\", "+i_distancia.getText()+", "+i_distanciaReta.getText()+")";
@@ -90,22 +86,14 @@ public class MainActivity extends Activity {
         }
     };
 
-    private OnClickListener btnDeleteListener = new OnClickListener() {
+    private View.OnClickListener btnDeleteListener = new View.OnClickListener() {
         public void onClick(View v) {
-
-            String hostPort = txtHostPort.getText().toString();
-            int idxHost = hostPort.indexOf(":");
-            String host = hostPort.substring(0, idxHost);
-            int port = Integer.parseInt(hostPort.substring(idxHost + 1));
-
-            String sql;
             sql = "delete from tabLocalizeUnisc";
             RunSqlNonReturn(host, port, sql);
-
         }
     };
 
-    private OnClickListener btnClearListener = new OnClickListener() {
+    private View.OnClickListener btnClearListener = new View.OnClickListener() {
         public void onClick(View v) {
             txtStatus.setText("");
 
@@ -114,15 +102,14 @@ public class MainActivity extends Activity {
 
 
     private void RunSqlNonReturn(String host, int port, String sql) {
-        Talk2Module talk2Module;
-        talk2Module = new Talk2Module(host, port);
-        talk2Module.requestWhitoutResponse(sql, Talk2Module.TYPE_SQL);
+        talk2Module.requestWithoutResponse(sql, Talk2Module.TYPE_SQL);
     }
 
+    private void RunSqlSetTextView(String host, int port, String sql, TextView v) {
+        talk2Module.requestSetTextView(sql, Talk2Module.TYPE_SQL, v);
+    }
 
     private String RunSql(String host, int port, String sql) {
-        Talk2Module talk2Module;
-        talk2Module = new Talk2Module(host, port);
         return talk2Module.request(sql, Talk2Module.TYPE_SQL);
     }
 
