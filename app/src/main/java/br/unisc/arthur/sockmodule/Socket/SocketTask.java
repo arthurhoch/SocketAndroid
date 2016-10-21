@@ -12,12 +12,22 @@ public abstract class SocketTask extends AsyncTask<String, String, String> {
     private int timeout;
     private NetClient netClient;
 
+    private TextView v;
+
 
     public SocketTask(String host, int port, int timeout) {
         super();
         this.host = host;
         this.port = port;
         this.timeout = timeout;
+    }
+
+    public SocketTask(String host, int port, int timeout, TextView v) {
+        super();
+        this.host = host;
+        this.port = port;
+        this.timeout = timeout;
+        this.v = v;
     }
 
 
@@ -27,19 +37,18 @@ public abstract class SocketTask extends AsyncTask<String, String, String> {
 
         try {
 
-            Log.d("Socket", "Create :"+host+":"+port);
             netClient = new NetClient(host, port);
 
             for (String p: params) {
-                Log.d("Socket", "Send :"+p);
                 netClient.sendDataWithString(p);
             }
-            Log.d("Socket", "Recive: ");
             result = netClient.receiveDataFromServer();
-            Log.d("Socket", "Recive:"+result);
+
+            publishProgress(result);
 
             } catch (Exception e) {
-                Log.e("Socket Android", "Erro ao fechar conexao", e);
+                //Log.e("Socket Android", "Erro ao fechar conexao", e);
+                publishProgress("Conection problem.");
             }
 
         return result;
